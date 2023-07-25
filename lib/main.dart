@@ -1,8 +1,14 @@
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:menu_app/firebase_options.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   runApp(const MyApp());
 }
 
@@ -30,8 +36,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -40,7 +44,9 @@ class _HomeState extends State<Home> {
             Padding(
               padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  
+                },
                 icon: Icon(Icons.restaurant_menu),
               ),
             ),
