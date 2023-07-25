@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "691003196896",
+    "project_id": "iitj-menu-2507",
+    "storage_bucket": "iitj-menu-2507.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691003196896:android:96926d9b24ecf9f0f91785",
+        "android_client_info": {
+          "package_name": "com.example.menu_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691003196896-8j5ko93fj0b682he84p1pib9d1p7t7lg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK3tQkQru5Xw4C8Ut5w8Cggc6uFpfF9g8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691003196896-8j5ko93fj0b682he84p1pib9d1p7t7lg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
