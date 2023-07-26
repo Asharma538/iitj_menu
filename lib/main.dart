@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:menu_app/firebase_options.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -70,8 +71,16 @@ class _HomeState extends State<Home> {
             Padding(
               padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: IconButton(
-                onPressed: () {
-
+                onPressed: () async {
+                  var ref  = FirebaseStorage.instance.ref("Menu.png");
+                  var getDownloadUrl = await ref.getDownloadURL();
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context){
+                      return Container(
+                        child: Image.network(getDownloadUrl),
+                      );
+                    }),
+                  );
                 },
                 icon: Icon(Icons.restaurant_menu),
               ),
