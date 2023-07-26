@@ -93,18 +93,28 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        body: Center(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(15, 20, 25, 0),
-              child: Column(
-                children: [
-                  Meal(context,"Breakfast", Home.Breakfast[0],Home.Breakfast[1], "7:00 AM", "10:00 AM",TimeOfDay(hour: 7, minute: 0),TimeOfDay(hour: 10, minute: 0)),
-                  Meal(context,"Lunch", Home.Lunch[0],Home.Lunch[1], "12:15 PM", "2:30 PM",TimeOfDay(hour: 12, minute: 15),TimeOfDay(hour: 14, minute: 30)),
-                  Meal(context,"Snacks", Home.Snacks[0],Home.Snacks[1], "5:30 PM", "6:30 PM",TimeOfDay(hour: 17, minute: 30),TimeOfDay(hour: 19, minute: 0)),
-                  Meal(context,"Dinner", Home.Dinner[0],Home.Dinner[1], "8:00 PM", "10:00 PM",TimeOfDay(hour: 20, minute: 0),TimeOfDay(hour: 22, minute: 0)),
-                ],
-              ),
-          ),
+        body: FutureBuilder<dynamic>(
+          future: fetchMenu(),
+          builder: (context,snapshot){
+            if (snapshot.connectionState == ConnectionState.waiting){
+              return Center(child: CircularProgressIndicator(),);
+            }
+            else{
+              return Center(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(15, 20, 25, 0),
+                  child: Column(
+                    children: [
+                      Meal(context,"Breakfast", Home.Breakfast[0],Home.Breakfast[1], "7:00 AM", "10:00 AM",TimeOfDay(hour: 7, minute: 0),TimeOfDay(hour: 10, minute: 0)),
+                      Meal(context,"Lunch", Home.Lunch[0],Home.Lunch[1], "12:15 PM", "2:30 PM",TimeOfDay(hour: 12, minute: 15),TimeOfDay(hour: 14, minute: 30)),
+                      Meal(context,"Snacks", Home.Snacks[0],Home.Snacks[1], "5:30 PM", "6:30 PM",TimeOfDay(hour: 17, minute: 30),TimeOfDay(hour: 18, minute: 30)),
+                      Meal(context,"Dinner", Home.Dinner[0],Home.Dinner[1], "8:00 PM", "10:00 PM",TimeOfDay(hour: 20, minute: 0),TimeOfDay(hour: 22, minute: 0)),
+                    ],
+                  ),
+                ),
+              );
+            }
+          },
         )
     );
   }
