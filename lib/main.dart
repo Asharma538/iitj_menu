@@ -1,3 +1,4 @@
+import 'package:photo_view/photo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -77,7 +78,12 @@ class _HomeState extends State<Home> {
                   Navigator.push(context,
                     MaterialPageRoute(builder: (context){
                       return Container(
-                        child: Image.network(getDownloadUrl),
+                        child: PhotoView(
+                          imageProvider: NetworkImage(getDownloadUrl),
+                          basePosition: Alignment.center,
+                          minScale: PhotoViewComputedScale.contained*0.8,
+                          maxScale: PhotoViewComputedScale.covered*3,
+                        ),
                       );
                     }),
                   );
