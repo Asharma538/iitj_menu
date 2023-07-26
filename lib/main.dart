@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
   static Map<int,String> weekday_name = {
@@ -42,6 +44,7 @@ class Home extends StatefulWidget {
   static List<dynamic> Lunch=[];
   static List<dynamic> Snacks=[];
   static List<dynamic> Dinner=[];
+  static List WeekDays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]; 
 
   @override
   State<Home> createState() => _HomeState();
@@ -49,9 +52,13 @@ class Home extends StatefulWidget {
 
 
 class _HomeState extends State<Home> {
-  fetchMenu() async{
+
+  String? selectedItem = '';
+
+
+  fetchMenu(day_today) async{
     var instance = FirebaseFirestore.instance;
-    var day_today = Home.weekday_name[DateTime.now().weekday];
+    // var day_today = Home.weekday_name[DateTime.now().weekday];
     final docRef = instance.collection("Menu").doc(day_today);
     await docRef.get().then((DocumentSnapshot snapshot)  {
       final data = snapshot.data() as Map<String,dynamic>;
@@ -63,7 +70,9 @@ class _HomeState extends State<Home> {
   }
   @override
   Widget build(BuildContext context) {
-    fetchMenu();
+    if(selectedItem==''){
+      selectedItem = Home.weekday_name[DateTime.now().weekday];
+    }
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -79,7 +88,7 @@ class _HomeState extends State<Home> {
                     MaterialPageRoute(builder: (context){
                       return Container(
                         child: PhotoView(
-                          imageProvider: NetworkImage(getDownloadUrl),
+                          imageProvider: CachedNetworkImageProvider(getDownloadUrl),
                           basePosition: Alignment.center,
                           minScale: PhotoViewComputedScale.contained*0.8,
                           maxScale: PhotoViewComputedScale.covered*3,
@@ -93,29 +102,64 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        body: FutureBuilder<dynamic>(
-          future: fetchMenu(),
-          builder: (context,snapshot){
-            if (snapshot.connectionState == ConnectionState.waiting){
-              return Center(child: CircularProgressIndicator(),);
-            }
-            else{
-              return Center(
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(15, 20, 25, 0),
-                  child: Column(
-                    children: [
-                      Meal(context,"Breakfast", Home.Breakfast[0],Home.Breakfast[1], "7:00 AM", "10:00 AM",TimeOfDay(hour: 7, minute: 0),TimeOfDay(hour: 10, minute: 0)),
-                      Meal(context,"Lunch", Home.Lunch[0],Home.Lunch[1], "12:15 PM", "2:30 PM",TimeOfDay(hour: 12, minute: 15),TimeOfDay(hour: 14, minute: 30)),
-                      Meal(context,"Snacks", Home.Snacks[0],Home.Snacks[1], "5:30 PM", "6:30 PM",TimeOfDay(hour: 17, minute: 30),TimeOfDay(hour: 18, minute: 30)),
-                      Meal(context,"Dinner", Home.Dinner[0],Home.Dinner[1], "8:00 PM", "10:00 PM",TimeOfDay(hour: 20, minute: 0),TimeOfDay(hour: 22, minute: 0)),
-                    ],
+        body: SingleChildScrollView(
+          child: Container(    
+            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),      
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.fromLTRB(20, 0 , 0, 0),
+                  padding: const EdgeInsets.fromLTRB(10, 0 , 5, 0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black54,width: 1),
+                    borderRadius: BorderRadius.circular(6)
+                    
                   ),
-                ),
-              );
-            }
-          },
+                    child: DropdownButton(
+                      value: selectedItem,
+                      underline: SizedBox(),
+                      onChanged: (newval){
+                        setState(() {
+                          selectedItem = newval as String?;
+                        });
+                      },
+                      items: Home.WeekDays.map((valueItem){
+                        return DropdownMenuItem(
+                          value: valueItem,
+                          child: Text(valueItem,style: TextStyle(fontSize: 19)),
+                          );
+                      }).toList(),
+                    ),
+                  ),
+                FutureBuilder<dynamic>(
+                future: fetchMenu(selectedItem),
+                builder: (context,snapshot){
+                  if (snapshot.connectionState == ConnectionState.waiting){
+                    return Center(child: CircularProgressIndicator(),);
+                  }
+                  else{
+                    return Center(
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(15, 20, 25, 0),
+                        child: Column(
+                          children: [
+                            Meal(context,"Breakfast", Home.Breakfast[0],Home.Breakfast[1], "7:00 AM", "10:00 AM",TimeOfDay(hour: 7, minute: 0),TimeOfDay(hour: 10, minute: 0)),
+                            Meal(context,"Lunch", Home.Lunch[0],Home.Lunch[1], "12:15 PM", "2:30 PM",TimeOfDay(hour: 12, minute: 15),TimeOfDay(hour: 14, minute: 30)),
+                            Meal(context,"Snacks", Home.Snacks[0],Home.Snacks[1], "5:30 PM", "6:30 PM",TimeOfDay(hour: 17, minute: 30),TimeOfDay(hour: 18, minute: 30)),
+                            Meal(context,"Dinner", Home.Dinner[0],Home.Dinner[1], "8:00 PM", "10:00 PM",TimeOfDay(hour: 20, minute: 0),TimeOfDay(hour: 22, minute: 0)),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+              ],
+            ),
+          ),
         )
+        
     );
   }
 }

@@ -39,6 +39,7 @@ dependencies:
   cloud_firestore: ^4.8.3
   firebase_storage:
   photo_view:
+  cached_network_image: ^3.2.3
 
 
 dev_dependencies:
