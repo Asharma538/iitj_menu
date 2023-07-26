@@ -44,7 +44,8 @@ class Home extends StatefulWidget {
   static List<dynamic> Lunch=[];
   static List<dynamic> Snacks=[];
   static List<dynamic> Dinner=[];
-  static List WeekDays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]; 
+  static String msg="";
+  static List WeekDays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
   @override
   State<Home> createState() => _HomeState();
@@ -66,6 +67,7 @@ class _HomeState extends State<Home> {
       Home.Lunch = data["Lunch"]!;
       Home.Snacks = data["Snacks"]!;
       Home.Dinner = data["Dinner"]!;
+      Home.msg = data["Message"]!;
     });
   }
   @override
@@ -103,18 +105,17 @@ class _HomeState extends State<Home> {
           ],
         ),
         body: SingleChildScrollView(
-          child: Container(    
-            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),      
+          child: Container(
+            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  margin: const EdgeInsets.fromLTRB(20, 0 , 0, 0),
+                  margin: const EdgeInsets.fromLTRB(20, 15 , 0, 15),
                   padding: const EdgeInsets.fromLTRB(10, 0 , 5, 0),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black54,width: 1),
+                    border: Border.all(color: Colors.grey,width: 1),
                     borderRadius: BorderRadius.circular(6)
-                    
                   ),
                     child: DropdownButton(
                       value: selectedItem,
@@ -136,7 +137,11 @@ class _HomeState extends State<Home> {
                 future: fetchMenu(selectedItem),
                 builder: (context,snapshot){
                   if (snapshot.connectionState == ConnectionState.waiting){
-                    return Center(child: CircularProgressIndicator(),);
+                    return Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.fromLTRB(0, 100, 0, 100),
+                      child: CircularProgressIndicator(),
+                    );
                   }
                   else{
                     return Center(
@@ -148,18 +153,41 @@ class _HomeState extends State<Home> {
                             Meal(context,"Lunch", Home.Lunch[0],Home.Lunch[1], "12:15 PM", "2:30 PM",TimeOfDay(hour: 12, minute: 15),TimeOfDay(hour: 14, minute: 30)),
                             Meal(context,"Snacks", Home.Snacks[0],Home.Snacks[1], "5:30 PM", "6:30 PM",TimeOfDay(hour: 17, minute: 30),TimeOfDay(hour: 18, minute: 30)),
                             Meal(context,"Dinner", Home.Dinner[0],Home.Dinner[1], "8:00 PM", "10:00 PM",TimeOfDay(hour: 20, minute: 0),TimeOfDay(hour: 22, minute: 0)),
+                            SizedBox(height: 30,),
+                            Text("${Home.msg}",style: TextStyle(color: Colors.grey),),
                           ],
                         ),
                       ),
                     );
                   }
-                },
-              ),
+                  },
+                ),
+                SizedBox(height: 15,),
+                Center(
+                    child: TextButton(
+                        onPressed: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context){
+                              return Scaffold(
+                                body: Center(
+                                  child: Text(
+                                    "Developed by Naman Goyal and Anadi Sharma",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            })
+                          );
+                        },
+                        child: Text("About Us"))),
               ],
             ),
           ),
         )
-        
+
     );
   }
 }
@@ -174,7 +202,6 @@ Widget Meal(
   if (DateTime.now().isAfter(start_dt) && DateTime.now().isBefore(end_dt)){
     active = Colors.teal;
   }
-  print(active);
 
   return TimelineTile(
     beforeLineStyle: LineStyle(
