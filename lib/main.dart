@@ -73,7 +73,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     if(selectedItem==''){
-      selectedItem = Home.weekday_name[DateTime.now().weekday];
+      selectedItem = Home.weekday_name[DateTime.now().weekday%7];
     }
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -149,10 +149,10 @@ class _HomeState extends State<Home> {
                         margin: EdgeInsets.fromLTRB(15, 20, 25, 0),
                         child: Column(
                           children: [
-                            Meal(context,"Breakfast", Home.Breakfast[0],Home.Breakfast[1], "7:00 AM", "10:00 AM",TimeOfDay(hour: 7, minute: 0),TimeOfDay(hour: 10, minute: 0)),
-                            Meal(context,"Lunch", Home.Lunch[0],Home.Lunch[1], "12:15 PM", "2:30 PM",TimeOfDay(hour: 12, minute: 15),TimeOfDay(hour: 14, minute: 30)),
-                            Meal(context,"Snacks", Home.Snacks[0],Home.Snacks[1], "5:30 PM", "6:30 PM",TimeOfDay(hour: 17, minute: 30),TimeOfDay(hour: 18, minute: 30)),
-                            Meal(context,"Dinner", Home.Dinner[0],Home.Dinner[1], "8:00 PM", "10:00 PM",TimeOfDay(hour: 20, minute: 0),TimeOfDay(hour: 22, minute: 0)),
+                            Meal(context,"Breakfast", Home.Breakfast[0],Home.Breakfast[1], "7:00 AM", "10:00 AM",TimeOfDay(hour: 7, minute: 0),TimeOfDay(hour: 10, minute: 0),selectedItem==Home.weekday_name[DateTime.now().weekday%7]),
+                            Meal(context,"Lunch", Home.Lunch[0],Home.Lunch[1], "12:15 PM", "2:30 PM",TimeOfDay(hour: 12, minute: 15),TimeOfDay(hour: 14, minute: 30),selectedItem==Home.weekday_name[DateTime.now().weekday%7]),
+                            Meal(context,"Snacks", Home.Snacks[0],Home.Snacks[1], "5:30 PM", "6:30 PM",TimeOfDay(hour: 17, minute: 30),TimeOfDay(hour: 18, minute: 30),selectedItem==Home.weekday_name[DateTime.now().weekday%7]),
+                            Meal(context,"Dinner", Home.Dinner[0],Home.Dinner[1], "8:00 PM", "10:00 PM",TimeOfDay(hour: 20, minute: 0),TimeOfDay(hour: 22, minute: 0),selectedItem==Home.weekday_name[DateTime.now().weekday%7]),
                             SizedBox(height: 30,),
                             Text("${Home.msg}",style: TextStyle(color: Colors.grey),),
                           ],
@@ -193,13 +193,13 @@ class _HomeState extends State<Home> {
 }
 
 Widget Meal(
-  BuildContext context, String Name, String Items,String SideItems, String start, String end,TimeOfDay meal_start_time,TimeOfDay meal_end_time) {
+  BuildContext context, String Name, String Items,String SideItems, String start, String end,TimeOfDay meal_start_time,TimeOfDay meal_end_time,bool today) {
   var start_dt = new DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,meal_start_time.hour,meal_start_time.minute);
   var end_dt = new DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,meal_end_time.hour,meal_end_time.minute);
 
   Color? active = Colors.orange[600];
 
-  if (DateTime.now().isAfter(start_dt) && DateTime.now().isBefore(end_dt)){
+  if (today && DateTime.now().isAfter(start_dt) && DateTime.now().isBefore(end_dt)){
     active = Colors.teal;
   }
 
